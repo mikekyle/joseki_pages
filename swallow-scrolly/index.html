@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Does the Swallow Still Fly?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-preset="pudding">
+
+<header class="hero">
+  <p class="eyebrow">Joseki Study · Go</p>
+  <h1>Does the Swallow Still Fly?</h1>
+  <p class="dek">We searched 120,000 pro games for a four-stone corner pattern — and asked KataGo what happens next.</p>
+</header>
+
+<section id="scrolly">
+  <div class="scrolly-inner">
+    <div class="graphic-pane" aria-live="polite">
+      <div id="graphic" role="img" aria-label="Visualization pane"></div>
+    </div>
+    <div class="step-pane">
+
+      <div class="step" data-step="0">
+        <p>Meet the <strong>Swallow</strong> — a corner sequence every Go player meets in the opening. Four stones, a familiar shape. But do pros still agree on what comes after?</p>
+      </div>
+
+      <div class="step" data-step="1">
+        <p>The book line: <strong>D16</strong>, <strong>C14</strong>, <strong>C12</strong>, <strong>F16</strong>. Black and white trade influence in the top-left corner. This exact sequence showed up <strong id="match-count">1,159</strong> times in our pro-game database.</p>
+      </div>
+
+      <div class="step" data-step="2">
+        <p>We ran KataGo on 100 of those positions. The winrate for the player to move spreads across the whole board — mean <strong>47.7%</strong>, median <strong>49.2%</strong>. Roughly even, on average.</p>
+      </div>
+
+      <div class="step" data-step="3">
+        <p>But "average" hides the drama. Some positions sit at <strong>9%</strong> winrate. Others hit <strong>84%</strong>. Same joseki, wildly different outcomes — context matters.</p>
+      </div>
+
+      <div class="step" data-step="4">
+        <p>So what do pros actually play? <strong>D14</strong> is the AI favourite (52% of #1 picks). <strong>F15</strong> takes another 24%. The Swallow lands, but the flock splits.</p>
+      </div>
+
+      <div class="step" data-step="5">
+        <p>The most common continuation after F15? <strong>G15, F14</strong> — seen in 40% of follow-up sequences. Local fighting stays in the corner <strong>79%</strong> of the time.</p>
+      </div>
+
+      <div class="step" data-step="6">
+        <p>The Swallow still flies. The book sequence appears over a thousand times in pro play. But the landing strip has forked — and that's where the game really begins.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="method">
+  <h2>Method</h2>
+  <p>Pattern search via Zobrist hashing over 119,752 SGF games from the <a href="https://github.com/mikekyle/joseki_study">joseki_study</a> project. KataGo analysis on 100 matched positions. <a href="https://github.com/mikekyle/joseki_pages/blob/main/swallow.html">Full static report →</a></p>
+</section>
+
+<footer class="footer">
+  <p>Built with the <a href="https://github.com/mikekyle/skills">scrollytelling-data-viz</a> skill · <a href="https://github.com/mikekyle/skills/tree/main/examples/joseki-swallow">Source</a></p>
+</footer>
+
+<script src="https://unpkg.com/intersection-observer@0.12.2/intersection-observer.js"></script>
+<script src="https://unpkg.com/scrollama@3.2.0/build/scrollama.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

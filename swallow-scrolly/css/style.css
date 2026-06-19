@@ -1,0 +1,145 @@
+/* pudding preset — see skill references/design-presets.md */
+:root {
+  --bg: #FEFBF5;
+  --surface: #fff;
+  --text: #1a1a1a;
+  --text-muted: #666;
+  --accent: #D67A60;
+  --chart-muted: #c4b8a8;
+  --chart-highlight: #D67A60;
+  --border: #e8e4dd;
+  --board-bg: #DCB35C;
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-body: Inter, system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); }
+
+.hero {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 2rem;
+  text-align: center;
+}
+
+.eyebrow {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.dek {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+#scrolly { position: relative; }
+
+.scrolly-inner {
+  display: flex;
+  flex-direction: row-reverse;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.graphic-pane {
+  position: sticky;
+  top: 0;
+  width: 50%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+#graphic {
+  width: 100%;
+  max-width: 400px;
+  min-height: 200px;
+}
+
+.step-pane {
+  width: 50%;
+  padding: 0 2rem 4rem;
+}
+
+.step {
+  min-height: 75vh;
+  display: flex;
+  align-items: center;
+  opacity: 0.35;
+  transition: opacity 0.35s ease;
+}
+
+.step.is-active { opacity: 1; }
+
+.step p {
+  max-width: 22rem;
+  font-size: 1.05rem;
+}
+
+.method, .footer {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.method h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.footer {
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.error {
+  color: var(--accent);
+  font-size: 0.9rem;
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .scrolly-inner { flex-direction: column; }
+  .graphic-pane {
+    position: relative;
+    width: 100%;
+    height: 50vh;
+  }
+  .step-pane { width: 100%; padding: 0 1.25rem 2rem; }
+  .step { min-height: 500px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step { transition: none; opacity: 1; }
+}
