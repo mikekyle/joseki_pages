@@ -9,35 +9,37 @@ function parseCoord(coord) {
 }
 
 function cornerView(fullCol, fullRow) {
-  // Top-left corner of 19×19 → local 9×9 grid (cols 0–8, rows 0–8 from top)
   return { x: fullCol, y: fullRow };
 }
 
 export function renderBoard(container, options = {}) {
+  const host = d3.select(container);
+  const box = host.node()?.getBoundingClientRect() ?? { width: 360 };
+  const base = Math.min(options.width || 360, box.width || 360, 360);
+
   const {
     size = 9,
     stones = [],
     marks = [],
     ghost = [],
     annotations = [],
-    width = 360,
-    height = 360,
+    width = base,
+    height = base,
   } = options;
 
   const pad = 28;
   const inner = Math.min(width, height) - pad * 2;
   const cell = inner / (size - 1);
 
-  const svg = d3.select(container).selectAll('svg.board').data([1]);
-  const enter = svg.enter().append('svg').attr('class', 'board')
-    .attr('viewBox', `0 0 ${width} ${height}`)
-    .attr('width', width).attr('height', height);
-  const g = enter.merge(svg).selectAll('g.root').data([1]);
-  const gEnter = g.enter().append('g').attr('class', 'root');
-  const root = gEnter.merge(g);
+  const host = d3.select(container);
+  host.selectAll('svg.board').remove();
 
-  svg.exit().remove();
-  root.selectAll('*').remove();
+  const svg = host.append('svg').attr('class', 'board')
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .attr('width', '100%')
+    .attr('height', 'auto');
+
+  const root = svg.append('g').attr('class', 'root');
 
   root.append('rect')
     .attr('width', width).attr('height', height)
@@ -77,20 +79,27 @@ export function renderBoard(container, options = {}) {
       .attr('opacity', 0.5);
   });
 
-  stones.forEach(({ coord, color, opacity = 1, delay = 0 }, i) => {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  stones.forEach(({ coord, color, opacity = 1, delay = 0 }) => {
     const { col, row } = parseCoord(coord);
     const { x, y } = cornerView(col, row);
     if (x < 0 || x >= size || y < 0 || y >= size) return;
-    grid.append('circle')
+    const stone = grid.append('circle')
       .attr('class', 'stone')
       .attr('cx', x * cell).attr('cy', y * cell)
-      .attr('r', 0)
       .attr('fill', color === 'B' ? '#1a1a1a' : '#f5f5f0')
       .attr('stroke', color === 'B' ? '#000' : '#999')
       .attr('stroke-width', 0.5)
-      .attr('opacity', opacity)
-      .transition().delay(delay).duration(400)
-      .attr('r', cell * 0.44);
+      .attr('opacity', opacity);
+
+    if (reduced) {
+      stone.attr('r', cell * 0.44);
+    } else {
+      stone.attr('r', 0)
+        .transition().delay(delay).duration(400)
+        .attr('r', cell * 0.44);
+    }
   });
 
   marks.forEach(({ coord, label }) => {
@@ -109,7 +118,7 @@ export function renderBoard(container, options = {}) {
       .attr('x', width / 2)
       .attr('y', height - 8 - i * 14)
       .attr('text-anchor', 'middle')
-      .attr('font-size', 12)
+      .attr('font-size', 11)
       .attr('fill', 'var(--text-muted)')
       .text(text);
   });

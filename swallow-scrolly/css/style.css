@@ -11,9 +11,13 @@
   --board-bg: #DCB35C;
   --font-display: "Instrument Serif", Georgia, serif;
   --font-body: Inter, system-ui, sans-serif;
+  --graphic-height-desktop: 100vh;
+  --graphic-height-mobile: 280px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { overflow-x: clip; }
 
 body {
   background: var(--bg);
@@ -29,7 +33,7 @@ a { color: var(--accent); }
 .hero {
   max-width: 42rem;
   margin: 0 auto;
-  padding: 4rem 1.5rem 2rem;
+  padding: 3rem 1.5rem 1.5rem;
   text-align: center;
 }
 
@@ -56,7 +60,10 @@ a { color: var(--accent); }
   line-height: 1.5;
 }
 
-#scrolly { position: relative; }
+/* Scrolly container — no overflow:hidden (breaks iOS sticky) */
+#scrolly {
+  position: relative;
+}
 
 .scrolly-inner {
   display: flex;
@@ -66,14 +73,18 @@ a { color: var(--accent); }
 }
 
 .graphic-pane {
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
+  align-self: flex-start;
   width: 50%;
-  height: 100vh;
+  height: var(--graphic-height-desktop);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  z-index: 2;
+  background: var(--bg);
 }
 
 #graphic {
@@ -82,17 +93,23 @@ a { color: var(--accent); }
   min-height: 200px;
 }
 
+#graphic svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
 .step-pane {
   width: 50%;
   padding: 0 2rem 4rem;
 }
 
 .step {
-  min-height: 75vh;
   display: flex;
   align-items: center;
   opacity: 0.35;
   transition: opacity 0.35s ease;
+  /* min-height set in JS from window.innerHeight (px, not vh) */
 }
 
 .step.is-active { opacity: 1; }
@@ -129,15 +146,41 @@ a { color: var(--accent); }
   padding: 1rem;
 }
 
+/* Mobile: block layout + sticky graphic on top (keep scrolly, don't stack) */
 @media (max-width: 768px) {
-  .scrolly-inner { flex-direction: column; }
-  .graphic-pane {
-    position: relative;
-    width: 100%;
-    height: 50vh;
+  .hero { padding: 2.5rem 1.25rem 1rem; }
+
+  .scrolly-inner {
+    display: block;
+    max-width: none;
   }
-  .step-pane { width: 100%; padding: 0 1.25rem 2rem; }
-  .step { min-height: 500px; }
+
+  .graphic-pane {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: var(--graphic-height-mobile);
+    min-height: 240px;
+    max-height: 320px;
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .step-pane {
+    width: 100%;
+    padding: 0 1.25rem 2rem;
+  }
+
+  .step {
+    align-items: flex-start;
+    padding-top: 1.5rem;
+  }
+
+  .step p {
+    max-width: none;
+    font-size: 1rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

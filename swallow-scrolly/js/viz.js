@@ -13,6 +13,12 @@ const STATES = [
 let data = null;
 let reducedMotion = false;
 
+function graphicWidth(defaultW = 380) {
+  const el = document.getElementById('graphic');
+  if (!el) return defaultW;
+  return Math.min(defaultW, el.clientWidth || defaultW);
+}
+
 export function initViz(dataset) {
   data = dataset;
   reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -24,6 +30,7 @@ export function updateViz(stepIndex) {
   if (!data) return;
   const state = STATES[stepIndex] ?? STATES[0];
   const root = document.getElementById('viz-root');
+  if (!root) return;
   root.innerHTML = '';
 
   switch (state) {
@@ -32,7 +39,10 @@ export function updateViz(stepIndex) {
       break;
     case 'pattern-full':
       renderBoard(root, {
-        stones: data.moves.map((m, i) => ({ ...m, delay: reducedMotion ? 0 : i * 120 })),
+        stones: data.moves.map((m, i) => ({
+          ...m,
+          delay: reducedMotion ? 0 : i * 150,
+        })),
       });
       break;
     case 'histogram-all':
@@ -71,12 +81,15 @@ export function updateViz(stepIndex) {
 }
 
 function drawHistogram(container, { highlight }) {
-  const width = 380, height = 320, margin = { top: 24, right: 16, bottom: 40, left: 40 };
+  const width = graphicWidth(380);
+  const height = Math.round(width * 0.84);
+  const margin = { top: 28, right: 12, bottom: 44, left: 36 };
   const bins = data.bins.map(b => ({ ...b }));
 
   const svg = d3.select(container).append('svg')
     .attr('viewBox', `0 0 ${width} ${height}`)
-    .attr('width', width).attr('height', height);
+    .attr('width', '100%')
+    .attr('height', 'auto');
 
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
   const innerW = width - margin.left - margin.right;
@@ -101,19 +114,24 @@ function drawHistogram(container, { highlight }) {
     .attr('y', d => y(d.count))
     .attr('height', d => innerH - y(d.count));
 
-  g.append('g').attr('transform', `translate(0,${innerH})`).call(d3.axisBottom(x));
-  g.append('g').call(d3.axisLeft(y).ticks(5));
+  g.append('g')
+    .attr('transform', `translate(0,${innerH})`)
+    .call(d3.axisBottom(x))
+    .selectAll('text')
+    .attr('font-size', 10);
+
+  g.append('g').call(d3.axisLeft(y).ticks(5)).selectAll('text').attr('font-size', 10);
 
   svg.append('text')
     .attr('x', width / 2).attr('y', 16)
     .attr('text-anchor', 'middle')
-    .attr('font-size', 13)
+    .attr('font-size', 12)
     .attr('fill', 'var(--text-muted)')
-    .text(`KataGo winrate distribution (n=${data.winrates.length})`);
+    .text(`Winrate distribution (n=${data.winrates.length})`);
 
   if (highlight === 'outliers') {
     svg.append('text')
-      .attr('x', width / 2).attr('y', height - 6)
+      .attr('x', width / 2).attr('y', height - 8)
       .attr('text-anchor', 'middle')
       .attr('font-size', 11)
       .attr('fill', 'var(--accent)')
@@ -122,12 +140,15 @@ function drawHistogram(container, { highlight }) {
 }
 
 function drawNextMoves(container) {
-  const width = 380, height = 300, margin = { top: 32, right: 16, bottom: 36, left: 48 };
+  const width = graphicWidth(380);
+  const height = Math.round(width * 0.78);
+  const margin = { top: 36, right: 12, bottom: 40, left: 40 };
   const moves = data.continuations;
 
   const svg = d3.select(container).append('svg')
     .attr('viewBox', `0 0 ${width} ${height}`)
-    .attr('width', width).attr('height', height);
+    .attr('width', '100%')
+    .attr('height', 'auto');
 
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
   const innerW = width - margin.left - margin.right;
@@ -166,7 +187,7 @@ function drawNextMoves(container) {
   svg.append('text')
     .attr('x', width / 2).attr('y', 18)
     .attr('text-anchor', 'middle')
-    .attr('font-size', 13)
+    .attr('font-size', 12)
     .attr('fill', 'var(--text-muted)')
     .text('Top AI-recommended next moves');
 }
